@@ -1,0 +1,21 @@
+_fsci_multi_comment = "##"
+_fsci_comment       = "#"
+
+##
+	(C) Copyright 2021 Muhammad Faran Aiki
+
+	This is 'ironic', I need fsc to install fsc.
+	Therefore, we need a manual download and setup the fsc first.
+##
+
+
+useof case_no_fall
+useof case_no_end
+
+case (os_name)
+	"windows":
+		file_ext = ".bat"
+	"linux" or "mac":
+		file_ext = ".sh"
+
+!build/build.(file_ext)
