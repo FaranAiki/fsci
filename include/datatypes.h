@@ -4,13 +4,17 @@
  *	This uses macro... which is definitely hard to read.
  */
 
+/*
+ *	Table using some multiplier.
+ */
+
 #define new_table(table_name, table_type)\
 \
 typedef struct _table_ ## table_name {\
 	unsigned int\
+		current;\
 		size,\
 		multiplier,\
-		current;\
 \
 	table_type\
 		*item;\
@@ -93,3 +97,9 @@ new_table(table_string, table_string);
 new_table(table_int, table_int);
 new_table(table_float, table_float);
 new_table(table_double, table_double);
+
+/*
+ *	Hash using some tricky function.
+ */
+
+
