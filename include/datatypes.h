@@ -1,91 +1,95 @@
 /*
  *	(C) Copyright 2021 Muhammad Faran Aiki.
  *
- * 	This is somehow... not efficient.
+ *	This uses macro... which is definitely hard to read.
  */
 
-enum {
-	INTEGER  = 1,
-	STRING   = 2,
-	DOUBLE   = 3,
-	TABLE    = 4,
-	HASH     = 5,
-	POINTER  = 6,
-};
+#define new_table(table_name, table_type)\
+\
+typedef struct _table_ ## table_name {\
+	unsigned int\
+		size,\
+		multiplier,\
+		current;\
+\
+	table_type\
+		*item;\
+} table_ ## table_name; \
+\
+int table_init_ ## table_name (table_ ## table_name *tab, int initial_size, int multiplier) {\
+	tab->current    = 0;\
+	tab->size       = initial_size;\
+	tab->multiplier = multiplier;\
+\
+	tab->item       = malloc(tab->size * sizeof(tab->item));\
+\
+	if (!tab->item) {\
+		return 1;\
+	}\
+	\
+	return 0;\
+}\
+\
+int table_check_ ## table_name (table_ ## table_name *tab) {\
+	void\
+		*temp;\
+	\
+	if (tab->current >= tab->size) {\
+		tab->size *= tab->multiplier;\
+		\
+		temp  = realloc(tab->item, tab->size * sizeof(tab->item));\
+\
+		if (!temp) {\
+			return 1;\
+		}\
+\
+		tab->item  = temp;\
+	}\
+\
+	return 0;\
+}\
+\
+int table_add_ ## table_name (table_ ## table_name *tab, table_type item) {\
+	table_check_ ## table_name (tab);\
+\
+	tab->item[tab->current] = item;\
+	\
+	tab->current++;\
+}\
+\
+int table_set_ ## table_name (table_ ## table_name *tab, table_type item, int index) {\
+	if (index < tab->current) {\
+		tab->item[index] = item;\
+		\
+		return 0;\
+	}\
+\
+	return 1;\
+}\
+\
+int table_delete_ ## table_name (table_ ## table_name *tab) {\
+	tab->current = 0;\
+	tab->size    = 0;\
+\
+	free(tab->item);\
+}\
+\
+table_type table_get_ ## table_name (table_ ## table_name *tab, int index) {\
+	return tab->item[index];\
+}\
+\
+table_type table_pop_ ## table_name (table_ ## table_name *tab) {\
+	return tab->item[tab->current--];\
+}\
 
-// Table data type.
-typedef struct _table {
-	unsigned int
-		size,       // The current size of array (by malloc).
-		current,    // The current allocated memory in the table.
-		multiplier; // Each time, the size is multiplied if and only if current > size.
+new_table(str, char*);
+new_table(string, char*);
+new_table(int, int);
+new_table(float, float);
+new_table(double, double);
 
-	void
-		**item;
-
-	int
-		*type;
-} table, Table;
-
-// Usage: table_init(&memory, 3, 10);
-void table_init(table *tab, int initial_size, int multiplier) {
-	
-}
-
-// Usage: table_add(&memory, non_heap_memory, 2); beware, that this only works if you understand C.
-void table_add(table *tab, void *item, int type) {
-
-}
-
-void table_add_str(table *tab, char *item) {
-
-}
-
-void table_add_int(table *tab, int *item) {
-
-}
-
-void table_add_double(table *tab, double *item) {
-
-}
-
-void table_add_array(table *tab, table item) {
-
-}
-
-void table_add_pointer(table *tab, void *item) {
-
-}
-
-void table_get(table *tab, int index) {
-	
-}
-
-// Hash data type.
-typedef struct _hash {
-	unsigned int
-		max,
-		key;
-
-	table
-		item;
-
-	int
-		*type;
-} hash, Hash;
-
-void hash_init(hash *dict, int initial_size, int multiplier, int key) {
-
-}
-
-void hash_key(void *item, int type) {
-	
-}
-
-/*
- *	Avoid conflicting.
- */
-
-void table_add_hash(table *tab, hash item) {
-
-}
+new_table(table_str, table_str);
+new_table(table_string, table_string);
+new_table(table_int, table_int);
+new_table(table_float, table_float);
+new_table(table_double, table_double);

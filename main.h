@@ -1,4 +1,4 @@
-#if !defined(FSCI_VERSION) || !defined(FSCI_DISTRIBUTION)
+#if !defined(FSCI_VERSION) || !defined(FSCI_DISTRIBUTION || FSCI_STABLE)
 	#error("Must be one packet with \"main.c\".")
 #endif
 

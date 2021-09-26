@@ -4,7 +4,7 @@
  * Non-memory allocated.
  */
 
-// Make sure the "another" string's length is lower than the string's length
+// Make sure the "another" string's length is lower than the string's length.
 int strcomp(char *string, char *another) {
 	while (*another || *string) {
 		if (*(another++) != *(string++)) {
@@ -15,6 +15,7 @@ int strcomp(char *string, char *another) {
 	return 1;
 }
 
+// Check whether or not if the string starts with token.
 int strst(char *string, char *token) {
 	int
 		i,

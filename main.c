@@ -6,6 +6,9 @@
  * 		[Forgot to fix it at GitHub, because the real acronym for "fsci" is "Faran Shell Command Interpreter"]
  *
  * 	By the way, I use arch... and geany... and C with C only (no C++).
+ *
+ *	Since this does not support C++, I will not cast the result of malloc.
+ *		Hence, the required minimum C version is C99.
  */
 
 // Define, well, this is a little bit boring....
