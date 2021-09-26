@@ -20,12 +20,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Include its reciprocal.
-#include "./main.h"
-
 // Include my include library.
 #include "./include/strman.h"
 #include "./include/datatypes.h"
+
+// Include its reciprocal.
+#include "./main.h"
+
+table_pointer
+	memory_pointer;
 
 /*
  *  Use "strcomp" instead of "strcmp".
@@ -35,12 +38,17 @@
 // The main itself is the-how the program runs and accept flags.
 int main(int argc, char **argv) {
 	char
-		*arg_holder;   // This is a chord substitution, except it is an argument vector, not a chord. 
+		*arg_holder;   // This is a chord substitution, except it is an argument vector (and except it was a bad analogy), not a chord. 
 	
 	int
 		in_arg = 0,    // This little variable is the reminder for the program to tell which flag is the last flag.
 		i;             // This little guy is the variable substitution. You do not need this, apparently.
 
+	// Initialization
+	atexit(fsci_quit);
+	
+	table_init_pointer(&memory_pointer, 128, 4);
+	
 	for (i = 1; i < argc; i++) {
 		if (strst(argv[i], "-") || strst(argv[i], "/")) {
 			in_arg = i;
@@ -58,15 +66,17 @@ int main(int argc, char **argv) {
 			arg_holder = strltrim(strltrim(argv[in_arg], "-"), "/");
 			
 			if (
-				strcomp(arg_holder, "e") || strcomp(arg_holder, "execute") ||
-				strcomp(arg_holder, "do") || strcomp(arg_holder, "parse") 
+				strcomp(arg_holder, "e") || strcomp(arg_holder, "exec") || strcomp(arg_holder, "execute") ||
+				strcomp(arg_holder, "do") 
 			) {
-				parse(argv[i]);
+				syntax(argv[i]);
 			}
 			
 			in_arg = 0;
 		} // if 
 	} // for
+
+	interactive();
 	
 	return EXIT_SUCCESS; // Trying to be careful.
 } // main

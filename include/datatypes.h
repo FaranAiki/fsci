@@ -8,13 +8,23 @@
  *	Table using some multiplier.
  */
 
+enum DATA_NUMBERING {
+	INTEGER,
+	STRING,
+	FLOAT,
+	DOUBLE,
+	TABLE,
+	HASH,
+	POINTER,
+};
+
 #define new_table(table_name, table_type)\
 \
 typedef struct _table_ ## table_name {\
 	unsigned int\
-		current;\
+		current,\
 		size,\
-		multiplier,\
+		multiplier;\
 \
 	table_type\
 		*item;\
@@ -91,12 +101,7 @@ new_table(string, char*);
 new_table(int, int);
 new_table(float, float);
 new_table(double, double);
-
-new_table(table_str, table_str);
-new_table(table_string, table_string);
-new_table(table_int, table_int);
-new_table(table_float, table_float);
-new_table(table_double, table_double);
+new_table(pointer, void*);
 
 /*
  *	Hash using some tricky function.
