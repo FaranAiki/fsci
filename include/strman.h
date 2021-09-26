@@ -1,6 +1,4 @@
-#ifndef NULL
-	#include <string.h>
-#endif 
+#include <string.h>
 
 /*
  * Non-memory allocated.
@@ -8,7 +6,7 @@
 
 // Make sure the "another" string's length is lower than the string's length
 int strcomp(char *string, char *another) {
-	while (another) {
+	while (*another || *string) {
 		if (*(another++) != *(string++)) {
 			return 0;
 		}
@@ -19,8 +17,8 @@ int strcomp(char *string, char *another) {
 
 int strst(char *string, char *token) {
 	int
-		i = 0,
-		tok_size = strlen(token) - 1;
+		i,
+		tok_size = strlen(token);
 	
 	for (i = 0; i < tok_size; i++) {
 		if (string[i] != token[i]) {
@@ -31,8 +29,28 @@ int strst(char *string, char *token) {
 	return 1;
 }
 
-int strltrim(char *string, char *token) {
+char *strltrim(char *string, char *token) {
+	char
+		*prev = string;
+
 	int
-		i = 0,
-		tok_size = st
+		i        = 0, cur = 0,
+		tok_size = strlen(token);
+
+	while (*(string++) == token[i] || !token[i]) {
+		if (!token[i]) {
+			i    = -1;
+			string--;
+			
+			cur += tok_size;
+		}
+		
+		i++;
+	}
+
+	return prev + cur;
 }
+
+/*
+ * Memory allocated
+ */
