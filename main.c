@@ -11,6 +11,11 @@
  *		Hence, the required minimum C version is C99.
  */
 
+// Undefine for safety purposes.
+#undef  FSCI_VERSION
+#undef  FSCI_DISTRIBUTION
+#undef  FSCI_STABLE
+
 // Define, well, this is a little bit boring....
 #define FSCI_VERSION      0.01
 #define FSCI_DISTRIBUTION "Faran"
@@ -23,11 +28,13 @@
 // Include my include library.
 #include "./include/strman.h"
 #include "./include/datatypes.h"
+#include "./include/color.h"
+#include "./include/io.h"
 
 // Include its reciprocal.
 #include "./main.h"
 
-table_pointer
+extern table_pointer
 	memory_pointer;
 
 /*
@@ -41,6 +48,7 @@ int main(int argc, char **argv) {
 		*arg_holder;   // This is a chord substitution, except it is an argument vector (and except it was a bad analogy), not a chord. 
 	
 	int
+		interp = 1,
 		in_arg = 0,    // This little variable is the reminder for the program to tell which flag is the last flag.
 		i;             // This little guy is the variable substitution. You do not need this, apparently.
 
@@ -60,7 +68,7 @@ int main(int argc, char **argv) {
 				strcomp(arg_holder, "h") ||
 				strcomp(arg_holder, "?")
 			) {
-				printf("Here is your helper.\n");
+				printf(fore_green "Here is your helper.\n" color_reset);
 			}
 		} else if (in_arg) {
 			arg_holder = strltrim(strltrim(argv[in_arg], "-"), "/");
@@ -69,14 +77,17 @@ int main(int argc, char **argv) {
 				strcomp(arg_holder, "e") || strcomp(arg_holder, "exec") || strcomp(arg_holder, "execute") ||
 				strcomp(arg_holder, "do") 
 			) {
-				syntax(argv[i]);
+				interp = 0;
+				fsci_syntax(argv[i]);
 			}
 			
 			in_arg = 0;
 		} // if 
 	} // for
-
-	interactive();
+	
+	if (interp) {
+		interactive();
+	}
 	
 	return EXIT_SUCCESS; // Trying to be careful.
 } // main

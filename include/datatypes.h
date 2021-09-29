@@ -24,13 +24,14 @@ typedef struct _table_ ## table_name {\
 	unsigned int\
 		current,\
 		size,\
-		multiplier;\
+		multiplier,\
+		addition;\
 \
 	table_type\
 		*item;\
 } table_ ## table_name; \
 \
-int table_init_ ## table_name (table_ ## table_name *tab, int initial_size, int multiplier) {\
+int table_init_ ## table_name (table_ ## table_name *tab, unsigned int initial_size, unsigned int multiplier) {\
 	tab->current    = 0;\
 	tab->size       = initial_size;\
 	tab->multiplier = multiplier;\
@@ -49,7 +50,7 @@ int table_check_ ## table_name (table_ ## table_name *tab) {\
 		*temp;\
 	\
 	if (tab->current >= tab->size) {\
-		tab->size *= tab->multiplier;\
+		tab->size  = tab->size * tab->multiplier + tab->addition;\
 		\
 		temp  = realloc(tab->item, tab->size * sizeof(tab->item));\
 \
@@ -63,15 +64,15 @@ int table_check_ ## table_name (table_ ## table_name *tab) {\
 	return 0;\
 }\
 \
-int table_add_ ## table_name (table_ ## table_name *tab, table_type item) {\
+int table_push_ ## table_name (table_ ## table_name *tab, table_type item) {\
 	table_check_ ## table_name (tab);\
 \
-	tab->item[tab->current] = item;\
+	tab->item[tab->current++] = item;\
 	\
-	tab->current++;\
+	return 0;\
 }\
 \
-int table_set_ ## table_name (table_ ## table_name *tab, table_type item, int index) {\
+int table_set_ ## table_name (table_ ## table_name *tab, table_type item, unsigned int index) {\
 	if (index < tab->current) {\
 		tab->item[index] = item;\
 		\
@@ -81,14 +82,7 @@ int table_set_ ## table_name (table_ ## table_name *tab, table_type item, int in
 	return 1;\
 }\
 \
-int table_delete_ ## table_name (table_ ## table_name *tab) {\
-	tab->current = 0;\
-	tab->size    = 0;\
-\
-	free(tab->item);\
-}\
-\
-table_type table_get_ ## table_name (table_ ## table_name *tab, int index) {\
+table_type table_get_ ## table_name (table_ ## table_name *tab, unsigned int index) {\
 	return tab->item[index];\
 }\
 \
@@ -96,15 +90,36 @@ table_type table_pop_ ## table_name (table_ ## table_name *tab) {\
 	return tab->item[tab->current--];\
 }\
 
-new_table(str, char*);
-new_table(string, char*);
+#define single_deletion(table_name)\
+int table_delete_ ## table_name (table_ ## table_name *tab) {\
+	free(tab->item)\
+\
+	return 0;\
+}
+
+#define each_deletion(table_name)\
+int table_delete_ ## table_name (table_ ## table_name *tab) {\
+	unsigned int\
+		i;\
+\
+	for (i = 0; i < tab->current; i++) {\
+		free(tab->item[i]);\
+	}\
+\
+	free(tab->item);\
+\
+	return 0;\
+}
+
+new_table(str, char*);     each_deletion(str);
+new_table(string, char*);  each_deletion(string);
 new_table(int, int);
 new_table(float, float);
 new_table(double, double);
-new_table(pointer, void*);
+new_table(pointer, void*); each_deletion(pointer);
 
 /*
  *	Hash using some tricky function.
  */
-
+#define new_hash
 
