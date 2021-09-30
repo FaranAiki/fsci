@@ -7,12 +7,12 @@
 #include "./include/datatypes.h"
 
 int main() {
-	char t[4096];
+	char
+		*y = strdup("1x2xxxxx");
 
-	while (1) {
-		while (fgets(t, 4096, stdin))
-			printf("%s", t);
-	}
+	strrtrim(y, "x");
+
+	printf("%s\n", y);
 	
 	return 0;
 }

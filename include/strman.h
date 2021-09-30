@@ -49,7 +49,7 @@ char *strltrim(const char *string, const char *token) {
 		i++;
 	}
 
-	return (char*) prev + cur;
+	return (char*) (prev + cur); // Unnecessary casting, just a reminder.
 }
 
 /*
@@ -57,26 +57,27 @@ char *strltrim(const char *string, const char *token) {
  */
 
 // Use 'strdup' to avoid segmentation fault!
-char *strrtrim(const char *string, const char *token) {
-	const char
-		*prev = string + strlen(string);
+char *strrtrim(char *string, const char *token) {
+	char
+		*prev = string + strlen(string) - 1;
 	
 	int
-		i        = strlen(token), cur = 0,
-		tok_size = i;
+		i        = strlen(token) - 1, cur = 0,
+		tok_size = i + 1;
 
 	string = prev;
 
 	while (*(string--) == token[i] || !token[i]) {
 		if (!token[i]) {
-			i    = -1;
-			string--;
+			i    = tok_size;
+			string++;
 			
 			cur += tok_size;
+
 		}
 		
-		i++;
+		i--;
 	}
 
-	return (char*) prev - cur;
+	*(prev - cur + 1) = 0;
 }

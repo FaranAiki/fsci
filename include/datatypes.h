@@ -8,6 +8,7 @@
  *	Table using some multiplier.
  */
 
+// Still unused.
 enum DATA_NUMBERING {
 	INTEGER,
 	STRING,
@@ -36,7 +37,7 @@ int table_init_ ## table_name (table_ ## table_name *tab, unsigned int initial_s
 	tab->size       = initial_size;\
 	tab->multiplier = multiplier;\
 \
-	tab->item       = malloc(tab->size * sizeof(tab->item));\
+	tab->item       = (table_type*) malloc(tab->size * sizeof(tab->item));\
 \
 	if (!tab->item) {\
 		return 1;\
@@ -52,13 +53,13 @@ int table_check_ ## table_name (table_ ## table_name *tab) {\
 	if (tab->current >= tab->size) {\
 		tab->size  = tab->size * tab->multiplier + tab->addition;\
 		\
-		temp  = realloc(tab->item, tab->size * sizeof(tab->item));\
+		temp       = (table_type*) realloc(tab->item, tab->size * sizeof(tab->item));\
 \
 		if (!temp) {\
 			return 1;\
 		}\
 \
-		tab->item  = temp;\
+		tab->item  = (table_type*) temp;\
 	}\
 \
 	return 0;\
@@ -92,7 +93,7 @@ table_type table_pop_ ## table_name (table_ ## table_name *tab) {\
 
 #define single_deletion(table_name)\
 int table_delete_ ## table_name (table_ ## table_name *tab) {\
-	free(tab->item)\
+	free(tab->item);\
 \
 	return 0;\
 }
@@ -113,9 +114,9 @@ int table_delete_ ## table_name (table_ ## table_name *tab) {\
 
 new_table(str, char*);     each_deletion(str);
 new_table(string, char*);  each_deletion(string);
-new_table(int, int);
-new_table(float, float);
-new_table(double, double);
+new_table(int, int);       single_deletion(int);
+new_table(float, float);   single_deletion(float);
+new_table(double, double); single_deletion(double);
 new_table(pointer, void*); each_deletion(pointer);
 
 /*

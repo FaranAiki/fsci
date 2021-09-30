@@ -7,8 +7,8 @@
  *
  * 	By the way, I use arch... and geany... and C with C only (no C++).
  *
- *	Since this does not support C++, I will not cast the result of malloc.
- *		Hence, the required minimum C version is C99.
+ *	Since this MUST support C++, I will cast the result of a malloc.
+ *		Hence, maybe this work below C99.
  */
 
 // Undefine for safety purposes.
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
 		in_arg = 0,    // This little variable is the reminder for the program to tell which flag is the last flag.
 		i;             // This little guy is the variable substitution. You do not need this, apparently.
 
-	// Initialization
+	// Initialization.
 	atexit(fsci_quit);
 	
 	table_init_pointer(&memory_pointer, 128, 4);
@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
 				strcomp(arg_holder, "do") 
 			) {
 				interp = 0;
-				fsci_syntax(argv[i]);
+				fsci_parse(argv[i]);
 			}
 			
 			in_arg = 0;
@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
 	
 	if (interp) {
 		interactive();
-	}
+	} // interp
 	
 	return EXIT_SUCCESS; // Trying to be careful.
 } // main

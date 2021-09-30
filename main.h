@@ -23,8 +23,8 @@ void fsci_quit() {
 }
 
 int prompt_add(const char *__restrict string, int *current_index, int *length_cmd, char *current_cmd) {
-	(*current_index) += strlen(string);
-	(*length_cmd)    += strlen(string);
+	(*current_index) = strlen(string) - 1;
+	(*length_cmd)    = strlen(string) - 1;
 
 	strcpy(current_cmd, string);
 
@@ -47,11 +47,11 @@ int interactive(void) {
 		current_char,
 		current_cmd[4096];
 
-	init_termios();
-	atexit(atexit_termios);
-
 	table_string
 		command_history;
+
+	init_termios();
+	atexit(atexit_termios);
 
 	table_init_string(&command_history, 16, 8);
 
@@ -73,6 +73,10 @@ int interactive(void) {
 				switch (current_char) {
 					case 'A': // up
 						if (current_history) {
+							for (i = 0; i < length_cmd - current_index; i++) {
+								printf("\33[C");
+							}
+							
 							for (i = 0; i < length_cmd; i++) {
 								printf("\b \b");
 							}
@@ -85,6 +89,10 @@ int interactive(void) {
 						break;
 					case 'B': // down
 						if (current_history < memory_pointer.current) {
+							for (i = 0; i < length_cmd - current_index; i++) {
+								printf("\33[C");
+							}
+							
 							for (i = 0; i < length_cmd; i++) {
 								printf("\b \b");
 							}
@@ -130,8 +138,12 @@ int interactive(void) {
 						if (current_index != 0) {
 							printf("\b \b");
 
-							current_cmd[current_index--] = 0;
-							length_cmd--;
+							if (current_index == length_cmd) {
+								current_cmd[current_index--] = 0;
+								length_cmd--;
+							} else {
+								
+							}
 						} else {
 							putchar(7);
 						}
@@ -150,7 +162,7 @@ int interactive(void) {
 		putchar('\n');
 
 		if (*current_cmd == '\n' || *current_cmd) {
-			fsci_syntax(current_cmd);
+			fsci_parse(current_cmd);
 
 			if (!table_push_string(&command_history, strdup(current_cmd))) {
 				current_history = command_history.current;
