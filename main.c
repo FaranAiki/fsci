@@ -11,25 +11,18 @@
  *		Hence, maybe this work below C99.
  */
 
-// Undefine for safety purposes.
-#undef  FSCI_VERSION
-#undef  FSCI_DISTRIBUTION
-#undef  FSCI_STABLE
+/*
+ *	Always treat "sizeof" like a function (or macro)!
+ */
 
-// Define, well, this is a little bit boring....
-#define FSCI_VERSION      0.01
-#define FSCI_DISTRIBUTION "Faran"
-#define FSCI_STABLE       0        // 0 For false, 1 for true.
+#undef  FSCI_INTERPRETER
+
+#define FSCI_INTERPRETER 1
 
 // Include standard library.
 #include <stdio.h>
 #include <stdlib.h>
-
-// Include my include library.
-#include "./include/strman.h"
-#include "./include/datatypes.h"
-#include "./include/color.h"
-#include "./include/io.h"
+#include <string.h>
 
 // Include its reciprocal.
 #include "./main.h"
@@ -53,9 +46,9 @@ int main(int argc, char **argv) {
 		i;             // This little guy is the variable substitution. You do not need this, apparently.
 
 	// Initialization.
-	atexit(fsci_quit);
+	atexit(interactive_quit);
 	
-	table_init_pointer(&memory_pointer, 128, 4);
+	fsci_init();
 	
 	for (i = 1; i < argc; i++) {
 		if (strst(argv[i], "-") || strst(argv[i], "/")) {

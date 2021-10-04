@@ -8,11 +8,11 @@
 
 int main() {
 	char
-		*y = strdup("1x2xxxxx");
+		*y = strdup("A  ");
 
-	strrtrim(y, "x");
+	strrtrim(y, " ");
 
-	printf("%s\n", y);
+	printf("%s", y);
 	
 	return 0;
 }

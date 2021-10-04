@@ -1,10 +1,8 @@
-#if (!defined(FSCI_VERSION) || !defined(FSCI_DISTRIBUTION) || !defined(FSCI_STABLE))
+#if (!FSCI_INTERPRETER)
 	#error("Must be one packet with \"main.c\".")
 #endif
 
-#if !defined(FSCI_INTERPRETER)
-	#include "fsci_interpreter.h"
-#endif
+#include "fsci_interpreter.h"
 
 /*
  *	Precendeces:
@@ -14,17 +12,15 @@
 
 // Global variables
 extern table_pointer
-		memory_pointer;
+	memory_pointer;
 
-void fsci_quit() {
-	table_delete_pointer(&memory_pointer);
-
+void interactive_quit() {
 	exit(EXIT_SUCCESS);
 }
 
 int prompt_add(const char *__restrict string, int *current_index, int *length_cmd, char *current_cmd) {
-	(*current_index) = strlen(string) - 1;
-	(*length_cmd)    = strlen(string) - 1;
+	(*current_index) = strlen(string);
+	(*length_cmd)    = strlen(string);
 
 	strcpy(current_cmd, string);
 
@@ -32,8 +28,6 @@ int prompt_add(const char *__restrict string, int *current_index, int *length_cm
 	
 	return 0;
 }
-
-// Warning ahead: Segmentation fault still exists. Sorry, I got homework to do.
 
 // The shell itself.
 int interactive(void) {
@@ -64,7 +58,7 @@ int interactive(void) {
 		current_index = 0, length_cmd = 0;
 		is_arrow = 0;
 
-		memset(current_cmd, 0, 4096 * sizeof(current_cmd[0]));
+		memset(current_cmd, 0, 4096 * sizeof(*current_cmd));
 		
 		printf(bright fore_cyan ">> " color_reset);
 		
@@ -88,7 +82,7 @@ int interactive(void) {
 						
 						break;
 					case 'B': // down
-						if (current_history < memory_pointer.current) {
+						if (current_history < command_history.current - 1) {
 							for (i = 0; i < length_cmd - current_index; i++) {
 								printf("\33[C");
 							}
@@ -122,7 +116,6 @@ int interactive(void) {
 						
 						break;
 					case '~':
-						printf("EHHH");
 						break;
 				}
 

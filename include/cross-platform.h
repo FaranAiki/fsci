@@ -14,6 +14,7 @@ void atexit_termios(void) {
 
 #include <unistd.h>
 #include <termios.h>
+#include <errno.h>
 
 struct termios
 	termios_before;
@@ -26,12 +27,12 @@ void init_termios(void) {
 	if(tcgetattr(0, &old) < 0) {
 		perror("tcsetattr()");
 	}
-
+	
 	termios_before = old;
-
+	
 	// Ported from https://github.com/scocoyash/Text-Editor-In-C/edit/master/stex.c
-	old.c_lflag &= ~(ECHO | ECHOE | ICANON | IEXTEN | ISIG);
-	old.c_iflag &= ~(BRKINT | INPCK | ISTRIP | IXON);
+	old.c_lflag &= ~(ECHO | ECHOE | ICANON | IEXTEN);
+	old.c_iflag &= ~(INPCK | ISTRIP | IXON);
 	old.c_cflag |= (CS8);
 	
 	old.c_cc[VMIN]  = 1;
@@ -44,6 +45,12 @@ void init_termios(void) {
 
 char getch(void) {
     return fgetc(stdin);
+}
+
+int gotoxy(int x, int y) {
+	printf("\033[%d;%df", x, y);
+	
+	return 0;
 }
 
 void atexit_termios(void) {
