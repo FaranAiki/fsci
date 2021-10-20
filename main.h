@@ -161,9 +161,11 @@ int interactive(void) {
 				current_history = command_history.current;
 			}
 		}
+
+		fsci_print_result();
 		
 		current_cmd[length_cmd] = 0;
-	}
+	} // while 1
 
 	return 0;
 } // interactive

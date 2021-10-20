@@ -14,8 +14,10 @@
 
 /*
  *	This uses macro... which is definitely hard to read.
- *		I would say no one will understand, even I do not know.... (just kidding, of course)
+ *		I would say no one will understand, even I do not know.... (just kidding, of course I know)
  */
+
+#define randomizer 1
 
 // "We" (I) do not like capital. 
 enum type_numbering {
@@ -39,11 +41,11 @@ typedef struct _prefix_string {
 		*data;
 } prefix_string;
 
-int prefix_string_init(prefix_string *pref_str, const char *string, int size) {
+int prefix_string_init(prefix_string *pref_str, const char *string, long size) {
 	pref_str->size = size;
 	pref_str->data = (char*) malloc(size * sizeof(*pref_str->data));
 
-	memcpy(pref_str->data, string, size); // SIG_SEV
+	memcpy(pref_str->data, string, size);
 	
 	return 0;
 }
@@ -78,6 +80,14 @@ int prefix_string_to_string(prefix_string *pref_str, char *string) {
 
 	return 0;
 }
+
+typedef struct _ext_int {
+	long
+		size;
+
+	int
+		*data;
+} extended_integer;
 
 #define init_table_normal(table_name, table_type)\
 typedef struct _table_ ## table_name {\
@@ -264,12 +274,6 @@ init_table_special(pointer, void*);    new_table(pointer, void*);        check_d
  */
 #define new_hash(hash_name, hash_type)\
 typedef struct _hash_ ## hash_name {\
-	unsigned int\
-		key;\
-\
-	unsigned int\
-		type;\
-\
 	table_ ## hash_type\
 		*item;\
 } hash_ ## hash_name;\
@@ -278,16 +282,30 @@ int hash_init_ ## hash_name (hash_init_ ## hash_name, unsigned int initial_size)
 	\
 }\
 \
-int hash_hash(void *item, int type, int algorithm) {\
+int hash_hash(void *item, unsigned int type, unsigned int algorithm, unsigned int max) {\
 	unsigned int\
-		current;\
-	\
+		current = 0;\
+\
+	char\
+		*temp,\
+		*string;\
+\
 	switch(type) {\
 		case type_int:\
+			current += ((algorithm - current) + randomizer) & (max - 1); \
 			return current;\
 		case type_string:\
+			string = (char*) item; tmp = string;\
+\
+			while (*string) {\
+				current += (((*string) | randomizer) * (string - temp)) & (max - 1);\
+				string++;\
+			}\
+\
 			return current;\
 		default:\
 			return 0;\
 	}\
 }
+
+#undef randomizer

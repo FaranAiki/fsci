@@ -61,22 +61,22 @@ int fsci_print_type(void *obj, int type) {
 	switch (type) {
 		case type_int:
 			i_temp  = *(int*) obj;
-			len     = intlen(i_temp) << 1;
+			len     = intlen(i_temp) << 1; // Equivalent to number of digit times two.
 			
 			s_temp  = (char*) malloc(len * sizeof(*s_temp)); // Unnecessary cast.
 			ps_temp = s_temp;
 
-			i = 0;
+			i = 3 - intlen(i_temp) % 3;
 			
 			sprintf(s_temp, "%d", i_temp);
 			
 			while (*s_temp) {
-				putchar(*(s_temp++));
-				
-				if (i++ > 1) {
-					i = 0;
+				if (i++ > 2) {
+					i = 1;
 					putchar(' ');
 				}
+				
+				putchar(*(s_temp++));
 			}
 
 			free(ps_temp);
@@ -86,7 +86,9 @@ int fsci_print_type(void *obj, int type) {
 			printf("\"%s\"", (char*) obj);
 			break;
 		case type_prefix_string:
+			putchar('`');
 			fwrite((*(prefix_string*) obj).data, sizeof(char), (*(prefix_string*) obj).size, stdout); // Redundancy is good.
+			putchar('`');
 			break;
 		case type_file:
 			printf("<File with Memory '%p'>", *(FILE**) obj);
@@ -131,7 +133,7 @@ int fsci_lazy_eval(char *expr) { // Misnorming.
 		*temp = expr;
 	
 	prefix_string
-		pfst;
+		*pfst;
 
 	expr = strltrim(expr, " ");
 	       strrtrim(expr, " ");
@@ -149,10 +151,12 @@ int fsci_lazy_eval(char *expr) { // Misnorming.
 	) { 
 		expr++;
 		expr[strlen(expr) - 1] = 0;
+
+		pfst = (prefix_string*) malloc(1 * sizeof(*pfst));
 		
-		prefix_string_init(&pfst, expr, strlen(expr));
+		prefix_string_init(pfst, expr, strlen(expr));
 		
-		table_push_pointer(&memory_pointer, &pfst, type_prefix_string);
+		table_push_pointer(&memory_pointer, pfst, type_prefix_string);
 	} else if (
 		is_valid_int(expr)
 	) {
@@ -366,8 +370,6 @@ int fsci_parse(char *cmd_ndup) {
 	}
 
 	fsci_expr(temp);
-
-	fsci_print_result();
 	
 	free(tmp);
 	

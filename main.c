@@ -31,7 +31,7 @@ extern table_pointer
 	memory_pointer;
 
 /*
- *  Use "strcomp" instead of "strcmp".
+ *  Use "strcomp" instead of "strcmp" to check whether or not two strings are equal.
  *  This is used due to speed and more customabilization.
  */
 
